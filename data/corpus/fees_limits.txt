@@ -1,0 +1,12 @@
+Fees and Limits
+
+Standard accounts have a daily transfer limit of 10000 euros and a monthly
+limit of 50000 euros. Premium accounts have higher limits set individually
+during onboarding.
+
+Domestic transfers are free. International transfers incur a fixed fee of 5
+euros plus a currency conversion margin. ATM withdrawals abroad are free up to
+three per month, after which a 2 euro fee applies per withdrawal.
+
+There is no monthly maintenance fee for standard accounts. Premium accounts are
+billed monthly and the fee is non-refundable once the billing cycle starts.

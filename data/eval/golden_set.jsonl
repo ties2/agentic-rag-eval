@@ -1,0 +1,8 @@
+{"question": "Within how many days can a customer request a refund?", "ground_truth": "Within 14 days of the transaction date.", "relevant_doc_ids": ["refunds_policy"]}
+{"question": "What happens to a refund if the original card has expired?", "ground_truth": "It is credited to the customer's primary account balance.", "relevant_doc_ids": ["refunds_policy"]}
+{"question": "How long does a customer have to open a dispute?", "ground_truth": "Within 120 days of the transaction.", "relevant_doc_ids": ["disputes_chargebacks"]}
+{"question": "What evidence is required to file a dispute?", "ground_truth": "Transaction reference, date, amount, and a description of the issue.", "relevant_doc_ids": ["disputes_chargebacks"]}
+{"question": "What documents are needed for KYC verification?", "ground_truth": "A government-issued identity document and a selfie for liveness checking.", "relevant_doc_ids": ["kyc_onboarding"]}
+{"question": "How long is verification data retained?", "ground_truth": "Five years, for anti-money laundering compliance.", "relevant_doc_ids": ["kyc_onboarding"]}
+{"question": "What is the daily transfer limit for a standard account?", "ground_truth": "10000 euros per day.", "relevant_doc_ids": ["fees_limits"]}
+{"question": "Are international transfers free?", "ground_truth": "No, they cost a fixed 5 euro fee plus a currency conversion margin.", "relevant_doc_ids": ["fees_limits"]}

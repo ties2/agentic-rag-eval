@@ -1,0 +1,48 @@
+[project]
+name = "agentic-rag-eval"
+version = "0.1.0"
+description = "Agentic RAG over a domain corpus with a self-measuring evaluation harness."
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "qdrant-client>=1.9",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+]
+
+[project.optional-dependencies]
+# Real providers — install when you switch off mock mode.
+openai = ["openai>=1.30"]
+rerank = ["sentence-transformers>=2.7"]
+mlops = ["mlflow>=2.12"]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 90
+src = ["src", "tests", "scripts", "config"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+files = ["src"]

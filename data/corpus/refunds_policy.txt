@@ -1,0 +1,14 @@
+Refunds Policy
+
+A customer may request a refund for a payment within 14 days of the transaction
+date. Refunds are only issued to the original payment method. If the original
+card has expired, the refund is credited to the customer's primary account
+balance instead.
+
+Refund requests for subscription products must be made before the next billing
+cycle. Once a new cycle begins, that period is non-refundable, but the customer
+may cancel to prevent future charges.
+
+Disputed transactions follow the chargeback process and are not handled under
+this refunds policy. A refund is typically processed within 3 to 5 business
+days after approval.

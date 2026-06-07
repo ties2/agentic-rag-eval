@@ -1,0 +1,49 @@
+.
+├── Dockerfile
+├── Makefile
+├── README.md
+├── config
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-314.pyc
+│   │   └── settings.cpython-314.pyc
+│   └── settings.py
+├── data
+│   ├── corpus
+│   │   ├── disputes_chargebacks.txt
+│   │   ├── fees_limits.txt
+│   │   ├── kyc_onboarding.txt
+│   │   └── refunds_policy.txt
+│   └── eval
+│       └── golden_set.jsonl
+├── docker-compose.yml
+├── pyproject.toml
+├── scripts
+│   ├── evaluate.py
+│   └── ingest.py
+├── src
+│   ├── agentic_rag_eval.egg-info
+│   │   ├── PKG-INFO
+│   │   ├── SOURCES.txt
+│   │   ├── dependency_links.txt
+│   │   ├── requires.txt
+│   │   └── top_level.txt
+│   └── ragkit
+│       ├── __init__.py
+│       ├── __pycache__
+│       ├── api
+│       ├── container.py
+│       ├── domain
+│       ├── eval
+│       ├── ml
+│       ├── observability
+│       ├── repositories
+│       └── services
+├── structure
+└── tests
+    ├── __init__.py
+    ├── test_agent_e2e.py
+    ├── test_chunking.py
+    └── test_metrics.py
+
+19 directories, 28 files

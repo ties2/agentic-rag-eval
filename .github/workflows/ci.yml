@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check .
+      - name: Type check
+        run: mypy
+      - name: Tests (offline mock mode)
+        run: pytest -q
+      # The eval harness runs in CI too — so every PR reports model quality,
+      # not just whether the code imports. This is the MLOps showpiece.
+      - name: Evaluation gate
+        run: |
+          python scripts/evaluate.py
+          python - <<'PY'
+          import json, sys
+          agg = json.load(open("reports/last_run.json"))
+          # Fail the build if quality regresses below a threshold.
+          assert agg["hit_rate"] >= 0.5, f"hit_rate too low: {agg['hit_rate']}"
+          print("Eval gate passed:", agg)
+          PY

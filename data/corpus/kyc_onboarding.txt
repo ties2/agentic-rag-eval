@@ -1,0 +1,13 @@
+KYC and Onboarding
+
+Know Your Customer (KYC) verification is required before a new account can send
+or receive money. The customer must provide a government-issued identity
+document and a selfie for liveness checking.
+
+Accounts that fail verification three times are placed in manual review. During
+manual review, incoming transfers are held but the account is not closed.
+Verification data is retained for five years to comply with anti-money
+laundering regulations.
+
+Politically exposed persons are subject to enhanced due diligence, which
+includes a source-of-funds check before the account is activated.

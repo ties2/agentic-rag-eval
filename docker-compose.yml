@@ -1,0 +1,36 @@
+# Spins up the real infrastructure so you can practise the "production" shape:
+# a standalone vector DB and an experiment-tracking server, with the API wired
+# to both. For pure learning you can ignore this and run everything in :memory:.
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri /mlruns
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlruns
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      RAG_QDRANT_URL: "http://qdrant:6333"
+      RAG_MLFLOW_TRACKING_URI: "http://mlflow:5000"
+      RAG_LLM_PROVIDER: "${RAG_LLM_PROVIDER:-mock}"
+      RAG_EMBEDDING_PROVIDER: "${RAG_EMBEDDING_PROVIDER:-mock}"
+      RAG_OPENAI_API_KEY: "${RAG_OPENAI_API_KEY:-}"
+    depends_on:
+      - qdrant
+      - mlflow
+
+volumes:
+  qdrant_data:
+  mlflow_data:

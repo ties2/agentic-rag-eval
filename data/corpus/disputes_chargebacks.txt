@@ -1,0 +1,14 @@
+Disputes and Chargebacks
+
+A chargeback is a forced reversal of a card payment initiated by the customer's
+bank. Customers should first contact the merchant before opening a dispute. To
+open a dispute, the customer files a claim within 120 days of the transaction.
+
+Required evidence for a dispute includes the transaction reference, the date,
+the amount, and a short description of the issue. Fraudulent transactions, where
+the customer did not authorise the payment, are escalated immediately and the
+card is blocked to prevent further loss.
+
+If a dispute is resolved in the customer's favour, the disputed amount is
+returned to the account. If it is rejected, the original charge stands and the
+customer is notified with the reason.
