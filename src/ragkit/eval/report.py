@@ -21,23 +21,23 @@ def render_markdown(results: dict) -> str:
         "",
         "| Metric | Score |",
         "| --- | --- |",
-        f"| Hit rate@k | {agg['hit_rate']:.3f} |",
-        f"| Precision@k | {agg['precision@k']:.3f} |",
-        f"| Recall@k | {agg['recall@k']:.3f} |",
+        f"| Hit rate_at_k | {agg['hit_rate']:.3f} |",
+        f"| Precision_at_k | {agg['precision_at_k']:.3f} |",
+        f"| Recall_at_k | {agg['recall_at_k']:.3f} |",
         f"| MRR | {agg['mrr']:.3f} |",
         f"| Faithfulness | {agg['faithfulness']:.3f} |",
         f"| Answer relevance | {agg['answer_relevance']:.3f} |",
         "",
         "## Per-question",
         "",
-        "| Question | Status | P@k | Recall | MRR | Faith | Rel |",
+        "| Question | Status | P_at_k | Recall | MRR | Faith | Rel |",
         "| --- | --- | --- | --- | --- | --- | --- |",
     ]
     for r in results["per_case"]:
         q = (r["question"][:50] + "…") if len(r["question"]) > 50 else r["question"]
         lines.append(
-            f"| {q} | {r['status']} | {r['precision@k']:.2f} | "
-            f"{r['recall@k']:.2f} | {r['mrr']:.2f} | "
+            f"| {q} | {r['status']} | {r['precision_at_k']:.2f} | "
+            f"{r['recall_at_k']:.2f} | {r['mrr']:.2f} | "
             f"{r['faithfulness']:.0f} | {r['answer_relevance']:.0f} |"
         )
     return "\n".join(lines) + "\n"

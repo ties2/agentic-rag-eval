@@ -1,6 +1,6 @@
 """Eval: runner — executes the golden set and aggregates metrics.
 
-This turns "I think retrieval got better" into "precision@4 went 0.61 -> 0.78,
+This turns "I think retrieval got better" into "precision_at_4 went 0.61 -> 0.78,
 faithfulness 0.80 -> 0.92, logged as MLflow run abc123". That measurability is
 the MLOps mindset and the thing that separates this project from the pack.
 
@@ -54,8 +54,8 @@ def run_eval(container: Container, settings: Settings) -> dict:
             "question": case.question,
             "status": ans.citation_status.value,
             "hit_rate": M.hit_rate(ans.contexts, case.relevant_doc_ids),
-            "precision@k": M.precision_at_k(ans.contexts, case.relevant_doc_ids),
-            "recall@k": M.recall_at_k(ans.contexts, case.relevant_doc_ids),
+            "precision_at_k": M.precision_at_k(ans.contexts, case.relevant_doc_ids),
+            "recall_at_k": M.recall_at_k(ans.contexts, case.relevant_doc_ids),
             "mrr": M.mrr(ans.contexts, case.relevant_doc_ids),
             "faithfulness": M.faithfulness(ans, judge),
             "answer_relevance": M.answer_relevance(ans, judge),
@@ -64,7 +64,7 @@ def run_eval(container: Container, settings: Settings) -> dict:
     elapsed = time.time() - t0
 
     metric_keys = [
-        "hit_rate", "precision@k", "recall@k", "mrr",
+        "hit_rate", "precision_at_k", "recall_at_k", "mrr",
         "faithfulness", "answer_relevance",
     ]
     aggregate = {

@@ -17,7 +17,7 @@ environment variable to use real models.
 Most portfolio RAG projects stop at `retrieve -> generate` in a notebook and
 have **no way to tell if they are any good**. This one:
 
-- separates the system into **layers** (domain / repositories / ML / services /
+- separa\tes the system into **layers** (domain / repositories / ML / services /
   API) so each part is swappable and testable — the same discipline you'd see
   in a production codebase;
 - is **agentic**: it rewrites weak queries, re-retrieves, and self-checks the
@@ -129,7 +129,12 @@ make ingest                 # build the in-memory index from data/corpus
 make eval                   # run the harness → reports/scorecard.md
 make serve                  # API docs at http://localhost:8000/docs
 make test                   # 6 offline tests
+
+#for monitoring
+mlflow ui
 ```
+
+
 
 Ask a question once the server is up:
 
@@ -151,7 +156,12 @@ RAG_QDRANT_URL=http://localhost:6333     # via docker compose up
 RAG_MLFLOW_TRACKING_URI=http://localhost:5000
 ```
 
-Install the extras: `pip install -e ".[openai,rerank,mlops]"`.
+Install the extras: `pip install -e ".[openai,rerank,mlops]"
+
+```bash
+docker compose up -d
+```
+
 
 ## 7. MLOps practices demonstrated
 
