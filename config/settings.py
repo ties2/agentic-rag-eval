@@ -29,7 +29,8 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None)
     llm_model: str = Field(default="gpt-4o-mini")
     embedding_model: str = Field(default="text-embedding-3-small")
-    embedding_dim: int = Field(default=256)
+    # embedding_dim: int = Field(default=256) #use for mock
+    embedding_dim: int = Field(default=768) #use for ollama
 
     # --- Vector store ------------------------------------------------------
     # ":memory:" runs Qdrant entirely in-process — zero infra needed to learn.

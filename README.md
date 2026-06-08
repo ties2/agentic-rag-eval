@@ -124,6 +124,7 @@ Running `make eval` produces a committed scorecard like:
 ```bash
 conda create -n agent-rag python=3.14 -y
 conda activate agent-rag
+docker compose up -d
 pip install -e ".[dev]"     # or: make install
 make ingest                 # build the in-memory index from data/corpus
 make eval                   # run the harness → reports/scorecard.md
@@ -159,6 +160,26 @@ RAG_MLFLOW_TRACKING_URI=http://localhost:5000
 Install the extras: `pip install -e ".[openai,rerank,mlops]"
 
 ```bash
+docker compose up -d
+```
+# use ollama models in local ( you can also use openAI)
+
+## download models
+```
+ollama pull llama3
+ollama pull nomic-embed-text
+```
+# delete dataset Qdrant
+```
+# see list of volums
+docker volume ls
+# delet special volum 
+docker volume rm agentic-rag-eval_qdrant_data
+# or if get error [9e9740ecfb3d5140d7ef...]
+docker rm -f 9e9740ecfb3d5140d7ef33896f45709b02ec0d38e6f3815a3d991a2874c02e65
+docker volume rm agentic-rag-eval_qdrant_data
+
+# start docker server
 docker compose up -d
 ```
 

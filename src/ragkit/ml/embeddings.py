@@ -57,10 +57,24 @@ class OpenAIEmbedder:
         )
         return [d.embedding for d in resp.data]
 
-
+# use openai
 def build_embedder(settings: Settings) -> Embedder:
+    if settings.embedding_provider == "ollama":
+        return OllamaEmbedder(model="nomic-embed-text")
     if settings.embedding_provider == "openai":
         return OpenAIEmbedder(
             settings.embedding_model, settings.embedding_dim, settings.openai_api_key
         )
     return HashEmbedder(settings.embedding_dim)
+
+#use ollama
+
+class OllamaEmbedder:
+    def __init__(self, model: str = "nomic-embed-text"):
+        from openai import OpenAI
+        self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+        self.model = model
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        response = self.client.embeddings.create(input=texts, model=self.model)
+        return [item.embedding for item in response.data]

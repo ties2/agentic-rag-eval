@@ -61,7 +61,40 @@ class OpenAILLM:
         return resp.choices[0].message.content or ""
 
 
-def build_llm(settings: Settings) -> LLM:
+# def build_llm(settings: Settings) -> LLM:
+#     if settings.llm_provider == "openai":
+#         return OpenAILLM(settings.llm_model, settings.openai_api_key)
+#     return MockLLM()
+
+from openai import OpenAI
+
+class OllamaLLM:
+    def __init__(self, model: str = "llama3"):
+        from openai import OpenAI
+        self.client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+        # با این خط، نام مدل را به زور روی llama3 قفل می‌کنیم!
+        self.model = "llama3"
+
+    def complete(self, system: str, prompt: str) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.0
+        )
+        return response.choices[0].message.content
+
+def build_llm(settings):
+    if settings.llm_provider == "mock":
+        return MockLLM()
+
+    if settings.llm_provider == "ollama":
+        return OllamaLLM(model=settings.llm_model)
+
     if settings.llm_provider == "openai":
-        return OpenAILLM(settings.llm_model, settings.openai_api_key)
-    return MockLLM()
+        return OpenAILLM(
+            model=settings.llm_model,
+            api_key=settings.openai_api_key
+        )
