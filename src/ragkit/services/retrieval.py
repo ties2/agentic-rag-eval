@@ -60,3 +60,18 @@ class RetrievalService:
             f"(top score {reranked[0].score:.3f})" if reranked else "rerank: empty"
         )
         return reranked
+    def vector_search(self, search_query: str, trace: list[str] | None = None):
+        trace = trace if trace is not None else []
+        [qvec] = self._embedder.embed([search_query])
+        candidates = self._store.search(qvec, self._s.top_k_vector)
+        trace.append(f"vector_search: {len(candidates)} candidates")
+        return candidates
+
+    def rerank_candidates(self, query: str, candidates, trace: list[str] | None = None):
+        trace = trace if trace is not None else []
+        reranked = self._reranker.rerank(query, candidates, self._s.top_k_rerank)
+        trace.append(
+            f"rerank: kept {len(reranked)} "
+            f"(top score {reranked[0].score:.3f})" if reranked else "rerank: empty"
+        )
+        return reranked

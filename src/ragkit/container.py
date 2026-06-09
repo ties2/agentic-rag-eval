@@ -20,6 +20,7 @@ from ragkit.repositories.vector_store import VectorStore
 from ragkit.services.agent import AgentService
 from ragkit.services.ingestion import IngestionService
 from ragkit.services.retrieval import RetrievalService
+from ragkit.services.operations import RagOperations
 
 
 @dataclass
@@ -42,7 +43,11 @@ def build_container(settings: Settings | None = None) -> Container:
 
     ingestion = IngestionService(settings, embedder, store)
     retrieval = RetrievalService(settings, embedder, store, reranker, llm)
-    agent = AgentService(settings, retrieval, llm)
+    if settings.agent_provider == "langgraph":
+        from ragkit.services.graph_agent import LangGraphAgent
+        agent = LangGraphAgent(settings, retrieval, RagOperations(llm))
+    else:
+        agent = AgentService(settings, retrieval, llm)
 
     return Container(
         settings=settings,

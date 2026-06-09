@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     embedding_model: str = Field(default="text-embedding-3-small")
     # embedding_dim: int = Field(default=256) #use for mock
     embedding_dim: int = Field(default=768) #use for ollama
+    #update
+    agent_provider: str = Field(default="hand_rolled")   # or "langgraph"
 
     # --- Vector store ------------------------------------------------------
     # ":memory:" runs Qdrant entirely in-process — zero infra needed to learn.

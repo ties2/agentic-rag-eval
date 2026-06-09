@@ -9,3 +9,5 @@ mlruns/
 .mypy_cache/
 .ruff_cache/
 *.egg-info/
+
+data/corpus/pdf

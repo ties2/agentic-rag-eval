@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RAG Inspector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f12;
+    --panel: #14171c;
+    --panel-2: #191d24;
+    --line: #262c35;
+    --ink: #e7ebf0;
+    --muted: #8a93a2;
+    --accent: #ffb454;        /* amber */
+    --retrieval: #5fb0ff;     /* blue  */
+    --judge: #ffb454;         /* amber */
+    --generate: #7ee0a8;      /* green */
+    --danger: #ff6b6b;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(255,180,84,.06), transparent),
+      radial-gradient(900px 500px at -10% 110%, rgba(95,176,255,.05), transparent);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { margin-bottom: 28px; animation: rise .5s ease both; }
+  .kicker {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 8px;
+  }
+  h1 { font-family: var(--mono); font-weight: 700; font-size: 30px; margin: 0; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 8px 0 0; font-size: 14px; }
+  .mode {
+    display: inline-flex; gap: 8px; align-items: center; margin-top: 14px;
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--generate); }
+
+  .ask {
+    display: flex; gap: 10px; margin: 22px 0 8px;
+    animation: rise .5s .05s ease both;
+  }
+  input[type=text] {
+    flex: 1; background: var(--panel); border: 1px solid var(--line);
+    color: var(--ink); padding: 14px 16px; border-radius: 12px; font-size: 15px;
+    font-family: var(--sans); outline: none; transition: border-color .15s;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  button {
+    background: var(--accent); color: #1a1206; border: 0; border-radius: 12px;
+    padding: 0 20px; font-family: var(--mono); font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: transform .08s, filter .15s;
+  }
+  button:hover { filter: brightness(1.07); }
+  button:active { transform: translateY(1px); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .hint { color: var(--muted); font-size: 12.5px; font-family: var(--mono); }
+
+  .result { margin-top: 26px; display: none; }
+  .result.show { display: block; animation: rise .45s ease both; }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 16px; padding: 22px 24px; margin-bottom: 18px;
+  }
+  .answer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .answer-head h2 { font-family: var(--mono); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0; font-weight: 500; }
+  .answer-text { font-size: 17px; line-height: 1.6; }
+  .answer-text .cite { font-family: var(--mono); font-size: 12px; color: var(--accent); background: rgba(255,180,84,.1); padding: 1px 6px; border-radius: 6px; }
+
+  .badge { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; white-space: nowrap; }
+  .badge.grounded { color: var(--generate); background: rgba(126,224,168,.12); border: 1px solid rgba(126,224,168,.3); }
+  .badge.partial  { color: var(--accent);  background: rgba(255,180,84,.12);  border: 1px solid rgba(255,180,84,.3); }
+  .badge.unsupported { color: var(--danger); background: rgba(255,107,107,.12); border: 1px solid rgba(255,107,107,.3); }
+
+  .section-label { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+
+  /* trace timeline — the hero element */
+  .trace { position: relative; padding-left: 26px; }
+  .trace::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .step { position: relative; padding: 7px 0; font-family: var(--mono); font-size: 13px; color: var(--ink); }
+  .step::before { content: ""; position: absolute; left: -23px; top: 12px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--muted); }
+  .step.t-retrieval::before { border-color: var(--retrieval); }
+  .step.t-judge::before { border-color: var(--judge); }
+  .step.t-generate::before { border-color: var(--generate); }
+  .step.t-final::before { background: var(--accent); border-color: var(--accent); }
+  .step .k { color: var(--muted); }
+
+  .ctx { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: var(--panel-2); }
+  .ctx-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .ctx-id { font-family: var(--mono); font-size: 11.5px; color: var(--retrieval); word-break: break-all; }
+  .ctx-text { font-size: 14px; line-height: 1.55; color: #c9d1dc; white-space: pre-wrap; }
+  .score { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .bar { width: 60px; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--retrieval); }
+
+  .err { color: var(--danger); font-family: var(--mono); font-size: 13px; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="kicker">Agentic RAG · Evaluation Harness</p>
+      <h1>RAG Inspector</h1>
+      <p class="sub">Ask a question against the indexed corpus. See the answer, its sources, and the agent's full reasoning trace.</p>
+      <span class="mode"><span class="dot"></span><span id="mode">orchestrator: …</span> · <span id="count">… chunks</span></span>
+    </header>
+
+    <div class="ask">
+      <input id="q" type="text" placeholder="e.g. How long do I have to request a refund?" autocomplete="off" />
+      <button id="go">Ask</button>
+    </div>
+    <p class="hint" id="hint">Press Enter to ask.</p>
+
+    <div class="result" id="result">
+      <div class="card">
+        <div class="answer-head">
+          <h2>Answer</h2>
+          <span id="status" class="badge"></span>
+        </div>
+        <div class="answer-text" id="answer"></div>
+      </div>
+
+      <div class="card">
+        <p class="section-label">Agent trace</p>
+        <div class="trace" id="trace"></div>
+      </div>
+
+      <div class="card">
+        <p class="section-label">Retrieved context</p>
+        <div id="contexts"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+async function health() {
+  try {
+    const r = await fetch("/health");
+    const d = await r.json();
+    $("count").textContent = d.indexed_chunks + " chunks";
+    if (d.orchestrator) $("mode").textContent = "orchestrator: " + d.orchestrator;
+  } catch (e) { $("mode").textContent = "orchestrator: offline"; }
+}
+
+function classifyStep(text) {
+  if (/rewrite|vector_search|rerank/.test(text)) return "t-retrieval";
+  if (/grade|verify|faithful/.test(text)) return "t-judge";
+  if (/generate/.test(text)) return "t-generate";
+  if (/final_status|abstain|refine/.test(text)) return "t-final";
+  return "";
+}
+
+function renderCitations(text) {
+  // Turn [chunk_id] references into styled chips.
+  return text.replace(/\[([^\]]+)\]/g, '<span class="cite">[$1]</span>');
+}
+
+async function ask() {
+  const q = $("q").value.trim();
+  if (q.length < 3) { $("hint").textContent = "Please type a longer question."; return; }
+  $("go").disabled = true; $("hint").textContent = "Thinking… (local models can take a moment)";
+  $("result").classList.remove("show");
+  try {
+    const r = await fetch("/ask", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: q }),
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const d = await r.json();
+
+    $("answer").innerHTML = renderCitations(d.answer);
+    const st = $("status");
+    st.textContent = d.citation_status;
+    st.className = "badge " + d.citation_status;
+
+    $("trace").innerHTML = d.trace.map((t) => {
+      const [head, ...rest] = t.split(":");
+      const tail = rest.join(":");
+      return `<div class="step ${classifyStep(t)}"><span class="k">${head}</span>${tail ? ":" + tail : ""}</div>`;
+    }).join("");
+
+    $("contexts").innerHTML = d.contexts.map((c) => {
+      const pct = Math.max(4, Math.min(100, Math.round(c.score * 100)));
+      return `<div class="ctx">
+        <div class="ctx-top">
+          <span class="ctx-id">${c.chunk_id}</span>
+          <span class="score"><span class="bar"><i style="width:${pct}%"></i></span>${c.score.toFixed(3)}</span>
+        </div>
+        <div class="ctx-text">${c.text}</div>
+      </div>`;
+    }).join("");
+
+    $("result").classList.add("show");
+    $("hint").textContent = "Press Enter to ask another.";
+  } catch (e) {
+    $("answer").innerHTML = '<span class="err">Request failed: ' + e.message + '. Is the server running?</span>';
+    $("status").className = "badge"; $("status").textContent = "";
+    $("trace").innerHTML = ""; $("contexts").innerHTML = "";
+    $("result").classList.add("show");
+    $("hint").textContent = "Press Enter to retry.";
+  } finally {
+    $("go").disabled = false;
+  }
+}
+
+$("go").addEventListener("click", ask);
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter") ask(); });
+health();
+</script>
+</body>
+</html>
