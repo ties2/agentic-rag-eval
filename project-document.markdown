@@ -1,4 +1,9 @@
-# Project Document Agentic RAG with a Self-Measuring Evaluation Harness
+# Project Document — Agentic RAG with a Self-Measuring Evaluation Harness
+
+> Planning & reference notes. Written at project start to define **what this is**
+> and **what it must do**. Keep this file at the repo root and update it as the
+> project evolves.
+
 ---
 
 ## 1. One-line summary
@@ -14,7 +19,7 @@ people need answers from. Plain keyword search returns documents, not answers;
 naive LLM chatbots invent facts ("hallucinate") and can't cite sources.
 
 This project answers natural-language questions **grounded in a specific
-corpus**, returns the supporting passages, and critically **proves how good
+corpus**, returns the supporting passages, and — critically — **proves how good
 it is with metrics** rather than vibes. The evaluation layer is the
 differentiator: most RAG projects have no way to know if a change helped or hurt.
 
@@ -75,8 +80,8 @@ depends on interfaces, never on vendor SDKs.
 | `domain/` | Pure entities (no deps) | `models.py` |
 | `repositories/` | Persistence (vector DB) | `vector_store.py` |
 | `ml/` | Swappable model parts | `chunking.py`, `embeddings.py`, `reranker.py`, `llm.py` |
-| `services/` | Business workflows | `ingestion.py`, `retrieval.py`, `agent.py` |
-| `api/` | HTTP controllers (thin) | `app.py`, `schemas.py` |
+| `services/` | Business workflows | `ingestion.py`, `retrieval.py`, `agent.py`, `graph_agent.py` (LangGraph), `operations.py` (shared steps) |
+| `api/` | HTTP controllers (thin) + web UI | `app.py`, `schemas.py`, `static/index.html` |
 | `eval/` | Evaluation harness | `metrics.py`, `runner.py`, `report.py` |
 | `config/`, `observability/` | Cross-cutting | `settings.py`, `logging.py` |
 | `container.py` | Composition root (DI) | wires everything from settings |
@@ -164,10 +169,10 @@ containerised infra · deterministic/reproducible runs.
 - [x] M3 — Two-stage retrieval (rewrite → search → rerank).
 - [x] M4 — Agent loop (grade → generate → self-check).
 - [x] M5 — Evaluation harness + scorecard + CI gate.
-- [ ] M6 — Swap in your real domain corpus + write its golden set.
-- [ ] M7 — Real embedder + cross-encoder; record precision@k before/after.
-- [ ] M8 — Port agent to LangGraph; add a trace-visualising UI.
-- [ ] M9 — Scheduled eval + drift alerting.
+- [x] M6 — Swap to real local models (Ollama: Llama 3 + nomic-embed-text), Qdrant in Docker, MLflow tracking.
+- [ ] M7 — Real cross-encoder reranker; record precision@k / relevance before vs after.
+- [x] M8 — Port agent to LangGraph (`services/graph_agent.py`, `RAG_AGENT_PROVIDER=langgraph`) + web UI at `/` showing the trace.
+- [ ] M9 — Scheduled eval + drift alerting; fast small-model judge to speed up eval.
 
 ## 14. Success criteria
 

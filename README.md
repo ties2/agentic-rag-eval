@@ -1,14 +1,9 @@
 # Agentic RAG with a Self-Measuring Evaluation Harness
 
-A retrieval-augmented question-answering system over a domain corpus that
-**grades its own quality** on every change. The point of this project is not
-"chat with a PDF" — it is to demonstrate the things hiring teams actually look
-for in 2026: clean layered architecture, an *agentic* retrieval loop with
-self-correction, and a real evaluation + MLOps pipeline.
-
-It runs **fully offline by default** (deterministic mock providers), so you can
-read, run, and understand every layer with zero API keys, then flip a single
-environment variable to use real models.
+BBAP-Sec Inspector — Agentic RAG over AI-Security Knowledge with a Self-Measuring Evaluation Harness
+An agentic retrieval system that answers questions over BBAP-Sec's AI-security corpus red-team playbooks, threat landscapes, vendor and market intelligence and grounds every answer in cited sources to reduce hallucination. Unlike a basic "chat with a PDF" tool, it runs a multi-step agentic loop 
+(query rewrite → retrieve → rerank → self-check faithfulness) and, critically, grades its own answer quality on every change through a built-in evaluation harness that scores retrieval and faithfulness against a labelled question set.
+Built on a clean, layered architecture with a pluggable retrieval backend, it runs fully local on open models (Ollama + Qdrant) with no data leaving the machine a deliberate fit for security-sensitive content and exposes the agent's full reasoning trace so every answer is auditable. It demonstrates the engineering BBAP-Sec cares about: trustworthy, measurable, self-correcting AI rather than opaque black-box output.
 
 ---
 
