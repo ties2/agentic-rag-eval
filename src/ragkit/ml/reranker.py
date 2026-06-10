@@ -13,7 +13,7 @@ from typing import Protocol
 
 from config.settings import Settings
 from ragkit.domain.models import RetrievedChunk
-
+from sentence_transformers import CrossEncoder
 
 class Reranker(Protocol):
     def rerank(
@@ -43,9 +43,10 @@ class LexicalReranker:
 
 class CrossEncoderReranker:
     def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"):
-        from sentence_transformers import CrossEncoder  # lazy import
 
-        self._model = CrossEncoder(model_name)
+
+        # self._model = CrossEncoder(model_name)
+        self._model = CrossEncoder(model_name, device="cpu")
 
     def rerank(self, query, candidates, top_k):
         pairs = [[query, c.chunk.text] for c in candidates]

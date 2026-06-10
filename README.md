@@ -127,7 +127,10 @@ conda activate agent-rag
 docker compose up -d
 pip install -e ".[dev]"     # or: make install
 make ingest                 # build the in-memory index from data/corpus
-make eval                   # run the harness → reports/scorecard.md
+
+python scripts/evaluate.py 15     # ~30 min, for iterating
+make eval                          # all 100, for the final scorecard
+
 make serve                  # API docs at http://localhost:8000/docs
 make test                   # 6 offline tests
 
@@ -182,6 +185,16 @@ docker volume rm agentic-rag-eval_qdrant_data
 # start docker server
 docker compose up -d
 ```
+### check space of docker
+```
+docker system df -v
+```
+### check Qdrant
+
+```
+curl http://localhost:6333/collections/rag_chunks
+```
+
 
 
 ## 7. MLOps practices demonstrated

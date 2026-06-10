@@ -27,7 +27,7 @@ class VectorStore:
         self._settings = settings
         self._dim = settings.embedding_dim
         if settings.qdrant_url == ":memory:":
-            self._client = QdrantClient(location=":memory:")
+            self._client = QdrantClient(location=":memory:", timeout=120)
         else:
             self._client = QdrantClient(url=settings.qdrant_url)
         self._collection = settings.collection_name

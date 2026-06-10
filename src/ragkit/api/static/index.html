@@ -103,6 +103,7 @@
   .score { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
   .bar { width: 60px; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
   .bar > i { display: block; height: 100%; background: var(--retrieval); }
+  .logo { height: 80px; width: auto; margin-bottom: 18px; display: block; }
 
   .err { color: var(--danger); font-family: var(--mono); font-size: 13px; }
   @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -111,14 +112,14 @@
 <body>
   <div class="wrap">
     <header>
-      <p class="kicker">Agentic RAG · Evaluation Harness</p>
-      <h1>RAG Inspector</h1>
-      <p class="sub">Ask a question against the indexed corpus. See the answer, its sources, and the agent's full reasoning trace.</p>
-      <span class="mode"><span class="dot"></span><span id="mode">orchestrator: …</span> · <span id="count">… chunks</span></span>
+        <img src="/static/logo.png" alt="BBAP-Sec" class="logo" />
+        <p class="kicker">BBAP-Sec · Agentic RAG · Evaluation Harness</p>
+        <h1>BBAP-Sec Inspector</h1>
+      <p class="sub">Ask a question about AI security, AI for cybersecurity, AI Ref team, AI threat modelling and Risk management etc ,. .</p>      <span class="mode"><span class="dot"></span><span id="mode">orchestrator: …</span> · <span id="count">… chunks</span></span>
     </header>
 
     <div class="ask">
-      <input id="q" type="text" placeholder="e.g. How long do I have to request a refund?" autocomplete="off" />
+      <input id="q" type="text" placeholder="e.g. What is prompt injection, and how do you test for it?" autocomplete="off" />
       <button id="go">Ask</button>
     </div>
     <p class="hint" id="hint">Press Enter to ask.</p>

@@ -9,7 +9,7 @@ interfaces, so it is trivially unit-testable.
 from __future__ import annotations
 
 from pathlib import Path
-
+from pypdf import PdfReader
 from config.settings import Settings
 from ragkit.domain.models import Document
 from ragkit.ml.chunking import chunk_document
@@ -31,14 +31,10 @@ class IngestionService:
     def load_corpus(self, corpus_dir: str | None = None) -> list[Document]:
         directory = Path(corpus_dir or self._settings.corpus_dir)
         docs: list[Document] = []
-        for path in sorted(directory.glob("*.txt")):
-            docs.append(
-                Document(
-                    doc_id=path.stem,
-                    text=path.read_text(encoding="utf-8"),
-                    metadata={"source": path.name},
-                )
-            )
+        for path in sorted(directory.glob("*.pdf")):
+            reader = PdfReader(str(path))
+            text = "\n\n".join((page.extract_text() or "") for page in reader.pages)
+            docs.append(Document(doc_id=path.stem, text=text, metadata={"source": path.name}))
         log.info("Loaded %d documents from %s", len(docs), directory)
         return docs
 

@@ -12,7 +12,7 @@ ingest:  # build the vector index from data/corpus
 	python scripts/ingest.py
 
 eval:  # run the evaluation harness and write reports/scorecard.md
-	python scripts/evaluate.py
+	python scripts/evaluate.py 
 
 serve:  # run the API at http://localhost:8000/docs
 	uvicorn ragkit.api.app:app --reload --app-dir src

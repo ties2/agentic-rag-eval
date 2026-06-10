@@ -6,14 +6,20 @@ container is built once at startup and shared.
 """
 
 from __future__ import annotations
+
 from contextlib import asynccontextmanager
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
 from ragkit.api.schemas import AnswerResponse, AskRequest, ContextDTO
 from ragkit.container import Container, build_container
-_container: Container | None = None
 
-from pathlib import Path
-from fastapi.responses import FileResponse
+_container: Container | None = None
+_STATIC = Path(__file__).parent / "static"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,19 +27,24 @@ async def lifespan(app: FastAPI):
     _container = build_container()
     yield
 
-app = FastAPI(title="Agentic RAG + Eval", version="0.1.0", lifespan=lifespan)
 
-_STATIC = Path(__file__).parent / "static"
+app = FastAPI(title="BBAP-Sec Inspector", version="0.1.0", lifespan=lifespan)
+app.mount("/static", StaticFiles(directory=str(_STATIC)), name="static")
+
 
 @app.get("/")
 def index() -> FileResponse:
     return FileResponse(_STATIC / "index.html")
+
+
 @app.get("/health")
 def health() -> dict:
     assert _container is not None
-    return {"status": "ok", "indexed_chunks": _container.store.count(),
-            "orchestrator": _container.settings.agent_provider,
-            }
+    return {
+        "status": "ok",
+        "indexed_chunks": _container.store.count(),
+        "orchestrator": _container.settings.agent_provider,
+    }
 
 
 @app.post("/ask", response_model=AnswerResponse)

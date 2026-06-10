@@ -9,7 +9,7 @@ the harness always runs.
 """
 
 from __future__ import annotations
-
+import random
 import json
 import statistics
 import time
@@ -42,8 +42,13 @@ def load_golden_set(path: str) -> list[EvalCase]:
     return cases
 
 
-def run_eval(container: Container, settings: Settings) -> dict:
+# def run_eval(container: Container, settings: Settings) -> dict:
+#     cases = load_golden_set(settings.golden_set_path)
+def run_eval(container: Container, settings: Settings, sample: int | None = None) -> dict:
     cases = load_golden_set(settings.golden_set_path)
+    if sample:
+        random.seed(42)  # reproducible subset across runs
+        cases = random.sample(cases, min(sample, len(cases)))
     judge = build_llm(settings)  # judge can differ from generator if you want
     per_case = []
 
